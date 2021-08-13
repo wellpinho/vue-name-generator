@@ -1,8 +1,8 @@
 <template>
   <div id="slogan">
     <div class="text-center">
-      <h1 >Name Generator
-      <h6 class="text-secondary">Gerador de nomes utilizando Vue.js, GraphQL e NodeJS</h6>
+      <h1 >Domain Generator
+      <h6 class="text-secondary">Gerador de dominíos utilizando Vue.js, GraphQL e NodeJS</h6>
       </h1>
     </div>
 
@@ -24,11 +24,39 @@
                     v-for="prefix in prefixes"
                     :key="prefix"
                   >
-                    {{ prefix }}
+                    <div class="row">
+                      <div class="col-md">
+                        {{ prefix }}
+                      </div>
+                      <div class="col-md text-end">
+                        <button 
+                          class="btn btn-danger"
+                          @click="deletePrefix(prefix)"
+                        >
+                          <span class="fa fa-trash"></span>
+                        </button>
+                      </div>
+                    </div>
                   </li>
                 </ul>
                 <br />  
-                <input class="form-control" type="text" placeholder="Digite o prefixo" />
+                <div class="input-group">
+                  <input 
+                    class="form-control" 
+                    type="text" 
+                    placeholder="Digite o prefixo" 
+                    v-model="prefix"
+                    v-on:keyup.enter="addPrefix(prefix)"
+                  />
+                  <div class="input-group-append">
+                    <button 
+                      class="btn btn-info"
+                      @click="addPrefix(prefix)"
+                    >
+                      <span class="fa fa-plus"></span>
+                    </button>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -45,19 +73,45 @@
                     v-for="sufix in sufixes"
                     :key="sufix"
                   >
-                    {{ sufix }}
+                    <div class="row">
+                      <div class="col-md">
+                        {{ sufix }}
+                      </div>
+                      <div class="col-md text-end">
+                        <button 
+                          class="btn btn-danger"
+                          @click="deleteSufix(sufix)"
+                        >
+                          <span class="fa fa-trash"></span>
+                        </button>
+                      </div>
+                    </div>
                   </li>
                 </ul>
                 <br />
-                <input class="form-control" type="text" placeholder="Digite o Sufixo" />
+                <div class="input-group">
+                  <input 
+                    class="form-control" 
+                    type="text" 
+                    placeholder="Digite o sufixo" 
+                    v-model="sufix"
+                    v-on:keyup="addSufix(sufix)"
+                  />
+                  <div class="input-group-append">
+                    <button 
+                      class="btn btn-info"
+                      @click="addSufix(sufix)"
+                    >
+                      <span class="fa fa-plus"></span>
+                    </button>
+                  </div>
+                </div>                
               </div>
             </div>
           </div>
         </div>
       </div>
-
       <br/>
-
       <div class="container">
         <h5>
           Dominíos disponíveis
@@ -87,15 +141,45 @@ import 'bootstrap/dist/css/bootstrap.css';
 import 'font-awesome/css/font-awesome.css';
 
 export default {
-  name: 'App',
-  data: function () {
-    return {
-      prefixes: ['Air', 'Jet', 'Flight'],
-      sufixes: ['Hub', 'Station', 'Mart'],
-      domains: ['AirHub', 'AirStation', 'AirMart', 'JetHub', 'JetStation', 'JetMart', 'FlightHub', 'FlightStation', 'FlightMart']
+	name: 'App',
+	data: function () {
+		return {
+      disabled: true,
+      prefix: '',
+      sufix: '',
+			prefixes: ['Air', 'Jet', 'Flight'],
+			sufixes: ['Hub', 'Station', 'Mart'],
+			domains: ['AirHub', 'AirStation', 'AirMart', 'JetHub', 'JetStation', 'JetMart', 'FlightHub', 'FlightStation', 'FlightMart']
+		};
+	},
+  methods: {
+    addPrefix(prefix) {
+      this.prefixes.push(prefix);
+      this.prefix = ''
+      this.generate();
+    },
+    addSufix(sufix) {
+      this.sufixes.push(sufix);
+      this.generate();
+    },
+    deletePrefix(prefix) {
+      this.prefixes.splice(this.prefixes.indexOf(prefix), 1);
+      this.generate();
+    },
+    deleteSufix(sufix) {
+      this.sufixes.splice(this.sufixes.indexOf(sufix), 1)
+      this.generate();
+    },
+    generate() {
+      this.domains = [];
+      for (const prefix of this.prefixes) {
+        for (const sufix of this.sufixes) {
+          this.domains.push(prefix + sufix);
+        }
+      }
     }
   }
-}
+};
 </script>
 
 <style scoped>
